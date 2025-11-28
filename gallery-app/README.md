@@ -59,6 +59,9 @@ source ~/.bashrc
 nvm install 18
 nvm use 18
 
+# Install Git
+sudo yum install git -y
+
 # Install PM2 globally
 npm install -g pm2
 ```
@@ -67,8 +70,10 @@ npm install -g pm2
 
 ```bash
 # Clone or upload your application
+git clone https://github.com/MachiBytes/gallery-app
+
 # Navigate to application directory
-cd /path/to/gallery-app
+cd gallery-app/gallery-app
 
 # Install dependencies
 npm install --production
@@ -76,7 +81,9 @@ npm install --production
 # Configure environment variables
 cp .env.example .env
 nano .env  # Edit with your production values
+```
 
+```bash
 # Start with PM2
 npm run prod
 
