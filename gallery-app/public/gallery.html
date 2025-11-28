@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - AWS Gallery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
+        .header { background: white; padding: 1.5rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #333; display: flex; align-items: center; gap: 10px; }
+        .upload-section { max-width: 600px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        .upload-area { border: 2px dashed #007bff; border-radius: 10px; padding: 2rem; margin: 1rem 0; transition: all 0.3s ease; }
+        .upload-area:hover { border-color: #0056b3; background: #f8f9ff; }
+        .file-input { display: none; }
+        .file-label { display: inline-block; padding: 10px 20px; background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; cursor: pointer; margin: 10px; transition: all 0.3s ease; }
+        .file-label:hover { background: #e9ecef; }
+        .gallery { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .image-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .image-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .image-card img { width: 100%; height: 200px; object-fit: cover; }
+        .image-info { padding: 1.5rem; }
+        .image-info h4 { color: #333; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .image-info p { color: #666; margin-bottom: 1rem; font-size: 0.9rem; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+        .btn-primary { background: linear-gradient(45deg, #007bff, #0056b3); color: white; box-shadow: 0 4px 15px rgba(0,123,255,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,123,255,0.4); }
+        .btn-danger { background: linear-gradient(45deg, #dc3545, #c82333); color: white; box-shadow: 0 4px 15px rgba(220,53,69,0.3); }
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(220,53,69,0.4); }
+        .empty-state { text-align: center; padding: 3rem; color: #666; }
+        .empty-state .icon { font-size: 4rem; margin-bottom: 1rem; }
+        .loading { text-align: center; padding: 2rem; }
+        .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite; }
+        .upload-spinner { display: inline-flex; align-items: center; gap: 8px; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🖼️ My Gallery</h1>
+        <button class="btn btn-primary" onclick="logout()">🚪 Logout</button>
+    </div>
+    
+    <div class="upload-section">
+        <h3>📷 Upload New Image</h3>
+        <div class="upload-area">
+            <input type="file" id="imageFile" class="file-input" accept="image/*" onchange="previewFile()">
+            <label for="imageFile" class="file-label">📁 Choose Image</label>
+            <div id="preview"></div>
+        </div>
+        <button class="btn btn-primary" id="uploadBtn" onclick="uploadImage()">
+            <span id="uploadText">☁️ Upload to S3</span>
+            <span id="uploadSpinner" class="upload-spinner" style="display: none;">⏳ Uploading...</span>
+        </button>
+    </div>
+    
+    <div class="gallery" id="gallery">
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading images...</p>
+        </div>
+    </div>
+    
+    <script>
+        function previewFile() {
+            const file = document.getElementById('imageFile').files[0];
+            const preview = document.getElementById('preview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin-top: 10px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        async function loadImages() {
+            try {
+                const response = await fetch('/images');
+                const images = await response.json();
+                
+                const gallery = document.getElementById('gallery');
+                
+                if (images.length === 0) {
+                    gallery.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">🖼️</div>
+                            <h3>No images yet</h3>
+                            <p>Upload your first image to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                gallery.innerHTML = images.map(image => `
+                    <div class="image-card">
+                        <img src="${image.url}" alt="${image.filename}" loading="lazy">
+                        <div class="image-info">
+                            <h4>${image.filename}</h4>
+                            <p>📅 ${new Date(image.upload_date).toLocaleDateString()}</p>
+                            <button class="btn btn-danger" id="deleteBtn-${image.id}" onclick="deleteImage(${image.id})">
+                                <span id="deleteText-${image.id}">🗑️ Delete</span>
+                                <span id="deleteSpinner-${image.id}" class="upload-spinner" style="display: none;">⏳ Deleting...</span>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('gallery').innerHTML = '<div class="empty-state"><h3>Error loading images</h3></div>';
+            }
+        }
+        
+        async function uploadImage() {
+            const fileInput = document.getElementById('imageFile');
+            if (!fileInput.files[0]) {
+                alert('Please select an image');
+                return;
+            }
+            
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadText = document.getElementById('uploadText');
+            const uploadSpinner = document.getElementById('uploadSpinner');
+            
+            // Show loading state
+            uploadBtn.disabled = true;
+            uploadText.style.display = 'none';
+            uploadSpinner.style.display = 'inline-flex';
+            
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    fileInput.value = '';
+                    document.getElementById('preview').innerHTML = '';
+                    loadImages();
+                } else {
+                    alert('Upload failed: ' + result.error);
+                }
+            } catch (error) {
+                alert('Upload failed');
+            } finally {
+                // Reset button state
+                uploadBtn.disabled = false;
+                uploadText.style.display = 'inline';
+                uploadSpinner.style.display = 'none';
+            }
+        }
+        
+        async function deleteImage(id) {
+            if (!confirm('Are you sure you want to delete this image?')) return;
+            
+            const deleteBtn = document.getElementById(`deleteBtn-${id}`);
+            const deleteText = document.getElementById(`deleteText-${id}`);
+            const deleteSpinner = document.getElementById(`deleteSpinner-${id}`);
+            
+            // Show loading state
+            deleteBtn.disabled = true;
+            deleteText.style.display = 'none';
+            deleteSpinner.style.display = 'inline-flex';
+            
+            try {
+                const response = await fetch(`/images/${id}`, { method: 'DELETE' });
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadImages();
+                } else {
+                    alert('Delete failed: ' + result.error);
+                }
+            } catch (error) {
+                alert('Delete failed');
+            } finally {
+                // Reset button state (if still exists)
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                    deleteText.style.display = 'inline';
+                    deleteSpinner.style.display = 'none';
+                }
+            }
+        }
+        
+        async function logout() {
+            await fetch('/logout', { method: 'POST' });
+            window.location.href = '/';
+        }
+        
+        loadImages();
+    </script>
+</body>
+</html>

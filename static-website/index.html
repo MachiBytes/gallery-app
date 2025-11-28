@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUP Manila - AWS Workshop</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="assets/tup-logo.png" alt="TUP Manila" onerror="this.style.display='none'">
+                <h1>TUP Manila</h1>
+            </div>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">AWS Services</a></li>
+                <li><a href="#gallery">Gallery App</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-icon">☁️</div>
+                <h1>Introduction to AWS Workshop</h1>
+                <p>Learn cloud computing with hands-on AWS experience</p>
+                <a href="#gallery" class="cta-button">🚀 Try Gallery App</a>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2>Workshop Overview</h2>
+                <p>This workshop demonstrates core AWS services through practical implementation of a full-stack application.</p>
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🔧</div>
+                        <h3>Hands-on Learning</h3>
+                        <p>Build real applications using AWS services</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🏢</div>
+                        <h3>Cloud Architecture</h3>
+                        <p>Understand scalable cloud infrastructure</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">✅</div>
+                        <h3>Best Practices</h3>
+                        <p>Learn industry-standard deployment methods</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="container">
+                <h2>AWS Services Covered</h2>
+                <div class="service-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🌐</div>
+                        <h3>VPC</h3>
+                        <p>Virtual Private Cloud for network isolation and security</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🖥️</div>
+                        <h3>EC2</h3>
+                        <p>Elastic Compute Cloud for scalable application hosting</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🗄️</div>
+                        <h3>RDS</h3>
+                        <p>Relational Database Service for managed database operations</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🗁️</div>
+                        <h3>S3</h3>
+                        <p>Simple Storage Service for file storage and static hosting</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="gallery-section">
+            <div class="container">
+                <h2>Gallery Application Demo</h2>
+                <p>Experience our full-stack application that integrates all AWS services</p>
+                <div class="app-features">
+                    <ul>
+                        <li>User authentication and session management</li>
+                        <li>Image upload and storage in S3</li>
+                        <li>Database operations with RDS</li>
+                        <li>Deployed on EC2 with PM2</li>
+                    </ul>
+                </div>
+                <a href="http://localhost:3000" class="app-button" target="_blank">
+                    🚀 Launch Gallery App
+                </a>
+                <p class="note">Replace the URL above with your actual EC2 instance URL</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 TUP Manila - Introduction to Cloud Computing Workshop</p>
+            <p>Hands-on AWS Experience</p>
+        </div>
+    </footer>
+</body>
+</html>

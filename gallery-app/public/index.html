@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Gallery App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 90%; }
+        .logo { font-size: 3rem; margin-bottom: 1rem; }
+        h1 { color: #333; margin-bottom: 0.5rem; font-size: 2rem; }
+        p { color: #666; margin-bottom: 2rem; font-size: 1.1rem; }
+        .btn { display: inline-block; padding: 12px 30px; margin: 10px; background: linear-gradient(45deg, #007bff, #0056b3); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,123,255,0.3); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,123,255,0.4); }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 2rem; }
+        .feature { padding: 1rem; background: #f8f9fa; border-radius: 10px; }
+        .feature-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📸</div>
+        <h1>AWS Gallery</h1>
+        <p>TUP Manila Cloud Computing Workshop</p>
+        <div>
+            <a href="/login" class="btn">🔐 Login</a>
+            <a href="/gallery" class="btn">🖼️ Gallery</a>
+        </div>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">☁️</div>
+                <div>S3 Storage</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🗄️</div>
+                <div>RDS Database</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🖥️</div>
+                <div>EC2 Hosting</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
